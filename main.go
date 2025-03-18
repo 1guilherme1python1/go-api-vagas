@@ -1,16 +1,22 @@
 ﻿package main
 
 import (
-	"fmt"
 	"github.com/1guilherme1python1/go-api-vagas/config"
 	"github.com/1guilherme1python1/go-api-vagas/router"
 )
 
+var (
+	logger *config.Logger
+)
+
 func main() {
+
+	logger = config.GetLogger("main")
+
 	//Initialize config
 	err := config.Init()
 	if err != nil {
-		fmt.Print(err.Error())
+		logger.Error("config init fail")
 		return
 	}
 

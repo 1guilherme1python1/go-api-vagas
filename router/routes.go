@@ -1,7 +1,7 @@
 ﻿package router
 
 import (
-	docs "github.com/1guilherme1python1/go-api-vagas/docs"
+	docs "github.com/1guilherme1python1/go-api-vagas/docp"
 	"github.com/1guilherme1python1/go-api-vagas/handler"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"

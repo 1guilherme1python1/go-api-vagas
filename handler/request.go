@@ -55,14 +55,15 @@ type UpdateOpeningRequest struct {
 }
 
 func (req *UpdateOpeningRequest) Validate() error {
-	if req.Role == "" ||
-		req.Location == "" ||
-		req.Company == "" ||
-		req.Remote == nil ||
-		req.Link == "" ||
-		req.Salary > 0 {
-		return nil
+	if req.Role == "" &&
+		req.Location == "" &&
+		req.Company == "" &&
+		req.Remote == nil &&
+		req.Link == "" &&
+		req.Salary <= 0 {
+
+		return fmt.Errorf("at least one field must be provided to update")
 	}
 
-	return fmt.Errorf("at least one field is required")
+	return nil
 }

@@ -52,5 +52,5 @@ func CreateOpeningHandler(ctx *gin.Context) {
 	}
 
 	logger.Infof("request: %+v\n", request)
-	sendSuccessResponse(ctx, http.StatusOK, "success")
+	SendSuccessResponse(ctx, http.StatusOK, opening)
 }

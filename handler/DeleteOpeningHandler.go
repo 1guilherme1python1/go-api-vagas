@@ -45,5 +45,5 @@ func DeleteOpeningHandler(ctx *gin.Context) {
 		return
 	}
 
-	sendSuccessResponse(ctx, http.StatusOK, "success")
+	SendSuccessResponse(ctx, http.StatusOK, "success")
 }

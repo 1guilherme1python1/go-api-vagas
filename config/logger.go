@@ -39,3 +39,11 @@ func (l *Logger) Warning(v ...interface{}) {
 func (l *Logger) Error(v ...interface{}) {
 	l.error.Println(v...)
 }
+
+func (l *Logger) Infof(format string, args ...interface{}) {
+	l.info.Printf(format, args...)
+}
+
+func (l *Logger) Errof(format string, args ...interface{}) {
+	l.error.Printf(format, args...)
+}

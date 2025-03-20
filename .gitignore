@@ -1,0 +1,12 @@
+﻿*.exe
+*.dll
+*.so
+*.dylib
+
+*.teste
+
+*.out
+
+Db folder
+
+db/

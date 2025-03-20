@@ -1,0 +1,19 @@
+﻿services:
+  app:
+    container_name: go-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app:cached       # ou delegated dependendo do SO
+    networks:
+      - go-network
+    command: air -c .air.toml
+
+volumes:
+  air-tmp:
+
+networks:
+  go-network:

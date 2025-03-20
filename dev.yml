@@ -7,7 +7,7 @@
     ports:
       - "8080:8080"
     volumes:
-      - .:/app:cached       # ou delegated dependendo do SO
+      - .:/app:cached     
     networks:
       - go-network
     command: air -c .air.toml

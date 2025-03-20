@@ -13,6 +13,7 @@ type Opening struct {
 	Remote   bool
 	Link     string
 	Salary   int64
+	Email    string
 }
 
 type OpeningResponse struct {

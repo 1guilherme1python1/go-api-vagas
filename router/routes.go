@@ -12,7 +12,12 @@ func initializeRoutes(router *gin.Engine) {
 	handler.InitializeHandler()
 	basePath := "/api/v1"
 	docs.SwaggerInfo.BasePath = basePath
-	v1 := router.Group("/api/v1")
+
+	router.POST("/login", handler.LoginHandler)
+	router.POST("/register", handler.CreateUserHandler)
+	v1 := router.Group(basePath)
+
+	v1.Use(handler.AuthMiddleware())
 	{
 		v1.GET("/opening", handler.ShowOpeningHandler)
 		v1.GET("/openings", handler.ListOpeningHandler)

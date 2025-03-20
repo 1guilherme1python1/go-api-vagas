@@ -1,6 +1,8 @@
 ﻿package handler
 
 import (
+	"github.com/1guilherme1python1/go-api-vagas/handler/requests"
+	"github.com/1guilherme1python1/go-api-vagas/handler/responses"
 	"github.com/1guilherme1python1/go-api-vagas/schemas"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -22,16 +24,22 @@ import (
 // @Failure 500 {object} ErrorResponse
 // @Router /opening [put]
 func UpdateOpeningHandler(ctx *gin.Context) {
-	request := UpdateOpeningRequest{}
+	request := requests.UpdateOpeningRequest{}
+
+	userEmail, exists := ctx.Get("email")
+	if !exists {
+		responses.SendErrorResponse(ctx, http.StatusUnauthorized, "User email not found")
+		return
+	}
 
 	err := ctx.BindJSON(&request)
 	if err != nil {
-		sendErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		responses.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if err := request.Validate(); err != nil {
-		sendErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		responses.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		logger.Errof("validation error: %v", err)
 		return
 	}
@@ -39,21 +47,21 @@ func UpdateOpeningHandler(ctx *gin.Context) {
 	id := ctx.Query("id")
 
 	if id == "" {
-		sendErrorResponse(ctx, http.StatusBadRequest, "id is required")
+		responses.SendErrorResponse(ctx, http.StatusBadRequest, "id is required")
 		return
 	}
 
 	opening := schemas.Opening{}
 
-	result := db.First(&opening, id)
+	result := db.Where("id = ? AND email = ?", id, userEmail).First(&opening)
 
 	if result.RowsAffected == 0 {
-		sendErrorResponse(ctx, http.StatusNotFound, "not found")
+		responses.SendErrorResponse(ctx, http.StatusNotFound, "not found")
 		return
 	}
 
 	if result.Error != nil {
-		sendErrorResponse(ctx, http.StatusInternalServerError, "Server Error kk")
+		responses.SendErrorResponse(ctx, http.StatusInternalServerError, "Server Error")
 		return
 	}
 
@@ -83,10 +91,10 @@ func UpdateOpeningHandler(ctx *gin.Context) {
 
 	if result := db.Save(&opening); result.Error != nil {
 		logger.Errof("error updating opening: %v", result.Error)
-		sendErrorResponse(ctx, http.StatusInternalServerError, "Server Error ll")
+		responses.SendErrorResponse(ctx, http.StatusInternalServerError, "Server Error")
 		return
 	}
 
-	SendSuccessResponse(ctx, http.StatusOK, opening)
+	responses.SendSuccessResponse(ctx, http.StatusOK, opening)
 
 }

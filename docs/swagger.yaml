@@ -30,9 +30,25 @@ definitions:
     type: object
   handler.ErrorResponse:
     properties:
-      errorCode:
-        type: string
       message:
+        type: string
+      statusCode:
+        type: string
+    type: object
+  handler.ListOpeningsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schemas.OpeningResponse'
+        type: array
+      message:
+        type: string
+    type: object
+  handler.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
         type: string
     type: object
   handler.ShowOpeningResponse:
@@ -40,6 +56,13 @@ definitions:
       data:
         $ref: '#/definitions/schemas.OpeningResponse'
       message:
+        type: string
+    type: object
+  handler.TokenResponse:
+    properties:
+      message:
+        type: string
+      statusCode:
         type: string
     type: object
   handler.UpdateOpeningRequest:
@@ -88,6 +111,44 @@ definitions:
 info:
   contact: {}
 paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return JWT token
+      parameters:
+      - description: User credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.TokenResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "401":
+          description: Invalid email or password
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: User login
+      tags:
+      - Auth
   /opening:
     delete:
       consumes:
@@ -210,6 +271,25 @@ paths:
           schema:
             $ref: '#/definitions/handler.ErrorResponse'
       summary: Update opening
+      tags:
+      - Openings
+  /openings:
+    get:
+      consumes:
+      - application/json
+      description: List all job openings
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.ListOpeningsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: List openings
       tags:
       - Openings
 swagger: "2.0"

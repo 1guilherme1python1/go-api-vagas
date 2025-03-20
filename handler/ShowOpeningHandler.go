@@ -1,6 +1,8 @@
 ﻿package handler
 
 import (
+	"github.com/1guilherme1python1/go-api-vagas/handler/requests"
+	"github.com/1guilherme1python1/go-api-vagas/handler/responses"
 	"github.com/1guilherme1python1/go-api-vagas/schemas"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -22,24 +24,42 @@ import (
 func ShowOpeningHandler(ctx *gin.Context) {
 	id := ctx.Query("id")
 
+	userEmail, exists := ctx.Get("email")
+	if !exists {
+		responses.SendErrorResponse(ctx, http.StatusUnauthorized, "User email not found")
+		return
+	}
+
 	if id == "" {
-		sendErrorResponse(ctx, http.StatusBadRequest, errParamIdRequired("id", "queryParameter").Error())
+		responses.SendErrorResponse(ctx, http.StatusBadRequest, requests.ErrParamIdRequired("id", "queryParameter").Error())
 		return
 	}
 
 	opening := schemas.Opening{}
 
-	result := db.First(&opening, id)
+	result := db.Where("id = ? AND email = ?", id, userEmail).First(&opening)
 
 	if result.RowsAffected == 0 {
-		sendErrorResponse(ctx, http.StatusNotFound, "not found")
+		responses.SendErrorResponse(ctx, http.StatusNotFound, "not found")
 		return
 	}
 
 	if result.Error != nil {
-		sendErrorResponse(ctx, http.StatusInternalServerError, "database error")
+		responses.SendErrorResponse(ctx, http.StatusInternalServerError, "database error")
 		return
 	}
 
-	SendSuccessResponse(ctx, http.StatusOK, opening)
+	response := responses.OpeningResponse{
+		ID:        opening.ID,
+		CreatedAt: opening.CreatedAt,
+		UpdatedAt: opening.UpdatedAt,
+		Role:      opening.Role,
+		Company:   opening.Company,
+		Location:  opening.Location,
+		Remote:    opening.Remote,
+		Link:      opening.Link,
+		Salary:    opening.Salary,
+	}
+
+	responses.SendSuccessResponse(ctx, http.StatusOK, response)
 }

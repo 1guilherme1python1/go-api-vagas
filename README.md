@@ -47,3 +47,11 @@ docker compose -f dev.yml up
 
 ```bash
 docker compose -f prod.yml up
+```
+
+### Gerando swagger
+
+```bash
+swag init
+```
+Acessando swagger (http:://localhost:8080/swagger/index.html).

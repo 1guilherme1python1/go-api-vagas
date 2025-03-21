@@ -111,7 +111,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /login:
+  /api/v1/login:
     post:
       consumes:
       - application/json
@@ -149,7 +149,7 @@ paths:
       summary: User login
       tags:
       - Auth
-  /opening:
+  /api/v1/opening:
     delete:
       consumes:
       - application/json
@@ -273,7 +273,7 @@ paths:
       summary: Update opening
       tags:
       - Openings
-  /openings:
+  /api/v1/openings:
     get:
       consumes:
       - application/json

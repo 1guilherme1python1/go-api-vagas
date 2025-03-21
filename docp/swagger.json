@@ -4,7 +4,7 @@
         "contact": {}
     },
     "paths": {
-        "/login": {
+        "/api/v1/login": {
             "post": {
                 "description": "Authenticate user and return JWT token",
                 "consumes": [
@@ -62,7 +62,7 @@
                 }
             }
         },
-        "/opening": {
+        "/api/v1/opening": {
             "get": {
                 "description": "Show a job opening",
                 "consumes": [
@@ -249,7 +249,7 @@
                 }
             }
         },
-        "/openings": {
+        "/api/v1/openings": {
             "get": {
                 "description": "List all job openings",
                 "consumes": [

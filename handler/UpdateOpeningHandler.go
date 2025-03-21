@@ -1,8 +1,6 @@
 ﻿package handler
 
 import (
-	"github.com/1guilherme1python1/go-api-vagas/handler/requests"
-	"github.com/1guilherme1python1/go-api-vagas/handler/responses"
 	"github.com/1guilherme1python1/go-api-vagas/schemas"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -22,24 +20,24 @@ import (
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /opening [put]
+// @Router /api/v1/opening [put]
 func UpdateOpeningHandler(ctx *gin.Context) {
-	request := requests.UpdateOpeningRequest{}
+	request := UpdateOpeningRequest{}
 
 	userEmail, exists := ctx.Get("email")
 	if !exists {
-		responses.SendErrorResponse(ctx, http.StatusUnauthorized, "User email not found")
+		SendErrorResponse(ctx, http.StatusUnauthorized, "User email not found")
 		return
 	}
 
 	err := ctx.BindJSON(&request)
 	if err != nil {
-		responses.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if err := request.Validate(); err != nil {
-		responses.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		logger.Errof("validation error: %v", err)
 		return
 	}
@@ -47,7 +45,7 @@ func UpdateOpeningHandler(ctx *gin.Context) {
 	id := ctx.Query("id")
 
 	if id == "" {
-		responses.SendErrorResponse(ctx, http.StatusBadRequest, "id is required")
+		SendErrorResponse(ctx, http.StatusBadRequest, "id is required")
 		return
 	}
 
@@ -56,12 +54,12 @@ func UpdateOpeningHandler(ctx *gin.Context) {
 	result := db.Where("id = ? AND email = ?", id, userEmail).First(&opening)
 
 	if result.RowsAffected == 0 {
-		responses.SendErrorResponse(ctx, http.StatusNotFound, "not found")
+		SendErrorResponse(ctx, http.StatusNotFound, "not found")
 		return
 	}
 
 	if result.Error != nil {
-		responses.SendErrorResponse(ctx, http.StatusInternalServerError, "Server Error")
+		SendErrorResponse(ctx, http.StatusInternalServerError, "Server Error")
 		return
 	}
 
@@ -91,10 +89,10 @@ func UpdateOpeningHandler(ctx *gin.Context) {
 
 	if result := db.Save(&opening); result.Error != nil {
 		logger.Errof("error updating opening: %v", result.Error)
-		responses.SendErrorResponse(ctx, http.StatusInternalServerError, "Server Error")
+		SendErrorResponse(ctx, http.StatusInternalServerError, "Server Error")
 		return
 	}
 
-	responses.SendSuccessResponse(ctx, http.StatusOK, opening)
+	SendSuccessResponse(ctx, http.StatusOK, opening)
 
 }

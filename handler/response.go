@@ -1,4 +1,4 @@
-﻿package responses
+﻿package handler
 
 import (
 	"github.com/1guilherme1python1/go-api-vagas/schemas"

@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/login": {
+        "/api/v1/login": {
             "post": {
                 "description": "Authenticate user and return JWT token",
                 "consumes": [
@@ -73,7 +73,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/opening": {
+        "/api/v1/opening": {
             "get": {
                 "description": "Show a job opening",
                 "consumes": [
@@ -260,7 +260,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/openings": {
+        "/api/v1/openings": {
             "get": {
                 "description": "List all job openings",
                 "consumes": [

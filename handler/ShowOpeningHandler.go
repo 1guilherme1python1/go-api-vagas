@@ -1,8 +1,6 @@
 ﻿package handler
 
 import (
-	"github.com/1guilherme1python1/go-api-vagas/handler/requests"
-	"github.com/1guilherme1python1/go-api-vagas/handler/responses"
 	"github.com/1guilherme1python1/go-api-vagas/schemas"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -20,18 +18,18 @@ import (
 // @Success 200 {object} ShowOpeningResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
-// @Router /opening [get]
+// @Router /api/v1/opening [get]
 func ShowOpeningHandler(ctx *gin.Context) {
 	id := ctx.Query("id")
 
 	userEmail, exists := ctx.Get("email")
 	if !exists {
-		responses.SendErrorResponse(ctx, http.StatusUnauthorized, "User email not found")
+		SendErrorResponse(ctx, http.StatusUnauthorized, "User email not found")
 		return
 	}
 
 	if id == "" {
-		responses.SendErrorResponse(ctx, http.StatusBadRequest, requests.ErrParamIdRequired("id", "queryParameter").Error())
+		SendErrorResponse(ctx, http.StatusBadRequest, ErrParamIdRequired("id", "queryParameter").Error())
 		return
 	}
 
@@ -40,16 +38,16 @@ func ShowOpeningHandler(ctx *gin.Context) {
 	result := db.Where("id = ? AND email = ?", id, userEmail).First(&opening)
 
 	if result.RowsAffected == 0 {
-		responses.SendErrorResponse(ctx, http.StatusNotFound, "not found")
+		SendErrorResponse(ctx, http.StatusNotFound, "not found")
 		return
 	}
 
 	if result.Error != nil {
-		responses.SendErrorResponse(ctx, http.StatusInternalServerError, "database error")
+		SendErrorResponse(ctx, http.StatusInternalServerError, "database error")
 		return
 	}
 
-	response := responses.OpeningResponse{
+	response := OpeningResponse{
 		ID:        opening.ID,
 		CreatedAt: opening.CreatedAt,
 		UpdatedAt: opening.UpdatedAt,
@@ -61,5 +59,5 @@ func ShowOpeningHandler(ctx *gin.Context) {
 		Salary:    opening.Salary,
 	}
 
-	responses.SendSuccessResponse(ctx, http.StatusOK, response)
+	SendSuccessResponse(ctx, http.StatusOK, response)
 }

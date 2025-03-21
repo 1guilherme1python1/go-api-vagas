@@ -13,7 +13,7 @@ func initializeRoutes(router *gin.Engine) {
 	basePath := "/api/v1"
 	docs.SwaggerInfo.BasePath = basePath
 
-	router.POST("/login", handler.LoginHandler)
+	router.POST("api/v1/login", handler.LoginHandler)
 	router.POST("/register", handler.CreateUserHandler)
 	v1 := router.Group(basePath)
 

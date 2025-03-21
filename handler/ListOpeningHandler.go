@@ -1,7 +1,6 @@
 ﻿package handler
 
 import (
-	"github.com/1guilherme1python1/go-api-vagas/handler/responses"
 	"github.com/1guilherme1python1/go-api-vagas/schemas"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -16,24 +15,24 @@ import (
 // @Produce json
 // @Success 200 {object} ListOpeningsResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /openings [get]
+// @Router /api/v1/openings [get]
 func ListOpeningHandler(ctx *gin.Context) {
 
 	userEmail, exists := ctx.Get("email")
 	if !exists {
-		responses.SendErrorResponse(ctx, http.StatusUnauthorized, "User email not found")
+		SendErrorResponse(ctx, http.StatusUnauthorized, "User email not found")
 		return
 	}
 
 	var openings []schemas.Opening
 
 	if err := db.Where("email = ?", userEmail.(string)).Find(&openings).Error; err != nil {
-		responses.SendErrorResponse(ctx, http.StatusInternalServerError, "Error listing openings")
+		SendErrorResponse(ctx, http.StatusInternalServerError, "Error listing openings")
 		return
 	}
 
 	if len(openings) == 0 {
-		responses.SendErrorResponse(ctx, http.StatusNotFound, "No openings found for this user")
+		SendErrorResponse(ctx, http.StatusNotFound, "No openings found for this user")
 		return
 	}
 
@@ -53,5 +52,5 @@ func ListOpeningHandler(ctx *gin.Context) {
 		logger.Infof("ListOpeningHandler: opening %+v", openingsResponse)
 	}
 
-	responses.SendSuccessResponse(ctx, http.StatusOK, openingsResponse)
+	SendSuccessResponse(ctx, http.StatusOK, openingsResponse)
 }

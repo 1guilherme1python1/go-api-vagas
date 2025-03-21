@@ -1,8 +1,6 @@
 ﻿package handler
 
 import (
-	"github.com/1guilherme1python1/go-api-vagas/handler/requests"
-	"github.com/1guilherme1python1/go-api-vagas/handler/responses"
 	"github.com/1guilherme1python1/go-api-vagas/schemas"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -23,9 +21,9 @@ import (
 // @Failure 404 {object} ErrorResponse "User not found"
 // @Failure 401 {object} ErrorResponse "Invalid email or password"
 // @Failure 500 {object} ErrorResponse "Server error"
-// @Router /login [post]
+// @Router /api/v1/login [post]
 func LoginHandler(ctx *gin.Context) {
-	var creds requests.LoginRequest
+	var creds LoginRequest
 	if err := ctx.ShouldBindJSON(&creds); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
@@ -36,17 +34,17 @@ func LoginHandler(ctx *gin.Context) {
 	result := db.Where("email = ?", creds.Email).First(&user)
 
 	if result.RowsAffected == 0 {
-		responses.SendErrorResponse(ctx, http.StatusNotFound, "user not found")
+		SendErrorResponse(ctx, http.StatusNotFound, "user not found")
 		return
 	}
 
 	if result.Error != nil {
-		responses.SendErrorResponse(ctx, http.StatusInternalServerError, "Server Error")
+		SendErrorResponse(ctx, http.StatusInternalServerError, "Server Error")
 		return
 	}
 
 	if creds.Password != user.Password {
-		responses.SendErrorResponse(ctx, http.StatusUnauthorized, "Invalid email or password")
+		SendErrorResponse(ctx, http.StatusUnauthorized, "Invalid email or password")
 		return
 	}
 
@@ -62,5 +60,5 @@ func LoginHandler(ctx *gin.Context) {
 		return
 	}
 
-	responses.SendSuccessResponse(ctx, http.StatusOK, tokenString)
+	SendSuccessResponse(ctx, http.StatusOK, tokenString)
 }
